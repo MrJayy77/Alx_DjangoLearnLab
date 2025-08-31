@@ -3,4 +3,4 @@
 **Command:**
 ```python
 from bookshelf.models import Book
-Book.objects.all()
+list(Book.objects.values_list("title", flat=True))
