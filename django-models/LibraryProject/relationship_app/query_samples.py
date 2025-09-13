@@ -8,10 +8,10 @@ print("Books by", author_name, ":", [book.title for book in books_by_author])
 
 # 2. List all books in a library
 library_name = "Central Library"
-library = Library.objects.get(name=library_name)  # <-- REQUIRED LINE
+library = Library.objects.get(name=library_name)
 books_in_library = library.books.all()
 print("Books in", library_name, ":", [book.title for book in books_in_library])
 
 # 3. Retrieve the librarian for a library
-librarian = library.librarian
+librarian = Librarian.objects.get(library=library)  # <-- REQUIRED LINE
 print("Librarian of", library_name, ":", librarian.name)
