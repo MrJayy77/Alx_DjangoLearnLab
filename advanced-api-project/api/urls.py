@@ -8,18 +8,18 @@ from .views import (
 )
 
 urlpatterns = [
-    # GET: List all books
+    # List all books
     path('books/', BookListView.as_view(), name='book-list'),
 
-    # GET: Retrieve details of a single book by ID
+    # Retrieve a single book
     path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
 
-    # POST: Create a new book (Authenticated users only)
+    # Create a book
     path('books/create/', BookCreateView.as_view(), name='book-create'),
 
-    # PUT/PATCH: Update a specific book (Authenticated users only)
+    # Update a book (requires book ID)
     path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'),
 
-    # DELETE: Delete a specific book (Authenticated users only)
+    # Delete a book (requires book ID)
     path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),
 ]
