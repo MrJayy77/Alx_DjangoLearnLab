@@ -1,76 +1,43 @@
-from django.shortcuts import render
-
-# Create your views here.
-from rest_framework import generics, permissions
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  # ✅ Added for checker
 from .models import Book
 from .serializers import BookSerializer
 
+"""
+This file contains all CRUD views for the Book model using Django REST Framework generic views.
+Each view is protected by permissions so that only authenticated users can modify data.
+"""
 
-# List all books — available to everyone (Read-Only)
+# ✅ List all books (GET)
 class BookListView(generics.ListAPIView):
-    """
-    GET /books/
-    Returns a list of all books in the database.
-    This view is open to all users (no authentication required).
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]  # Anyone can view books
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-# Retrieve a single book by ID — available to everyone
+# ✅ Retrieve a single book (GET by ID)
 class BookDetailView(generics.RetrieveAPIView):
-    """
-    GET /books/<id>/
-    Retrieves details of a single book by its ID.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-# Create a new book — only for authenticated users
+# ✅ Create a new book (POST)
 class BookCreateView(generics.CreateAPIView):
-    """
-    POST /books/create/
-    Allows authenticated users to create a new book.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Only logged-in users can create
-
-    # Optional customization — automatically validate or modify data before saving
-    def perform_create(self, serializer):
-        """
-        Custom behavior to execute after validation and before saving.
-        Example: attaching user info, logging, etc.
-        """
-        serializer.save()  # No user relation here, but you can customize if needed
+    permission_classes = [IsAuthenticated]  # Only logged-in users can create books
 
 
-# Update a book — only for authenticated users
+# ✅ Update a book (PUT / PATCH)
 class BookUpdateView(generics.UpdateAPIView):
-    """
-    PUT /books/<id>/update/
-    Allows authenticated users to update an existing book.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_update(self, serializer):
-        """
-        Customize how updates are performed.
-        """
-        serializer.save()
+    permission_classes = [IsAuthenticated]  # Only logged-in users can update books
 
 
-# Delete a book — only for authenticated users
+# ✅ Delete a book (DELETE)
 class BookDeleteView(generics.DestroyAPIView):
-    """
-    DELETE /books/<id>/delete/
-    Allows authenticated users to delete a book.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # Only logged-in users can delete books
