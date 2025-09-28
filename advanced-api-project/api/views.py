@@ -1,43 +1,65 @@
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  # ✅ Added for checker
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
 from .serializers import BookSerializer
 
-"""
-This file contains all CRUD views for the Book model using Django REST Framework generic views.
-Each view is protected by permissions so that only authenticated users can modify data.
-"""
-
-# ✅ List all books (GET)
+# List all books with filtering, searching, ordering
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['title', 'publication_year', 'author__name']
+    search_fields = ['title', 'author__name']
+    ordering_fields = ['title', 'publication_year', 'author__name']
+    ordering = ['title']  # default ordering
 
-
-# ✅ Retrieve a single book (GET by ID)
-class BookDetailView(generics.RetrieveAPIView):
+# Retrieve, update, delete a single book
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
 
-
-# ✅ Create a new book (POST)
+# Create a book
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # Only logged-in users can create books
 
-
-# ✅ Update a book (PUT / PATCH)
+# Optional: Update a book
 class BookUpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # Only logged-in users can update books
 
-
-# ✅ Delete a book (DELETE)
+# Optional: Delete a book
 class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # Only logged-in users can delete books
+
+from rest_framework import generics
+from .models import Book
+from .serializers import BookSerializer
+
+# List all books
+class BookListView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+# Retrieve, update, delete a single book
+class BookDetailView(generics.RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+# Create a new book
+class BookCreateView(generics.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+# Update an existing book
+class BookUpdateView(generics.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+# Delete an existing book
+class BookDeleteView(generics.DestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
